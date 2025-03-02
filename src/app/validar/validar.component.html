@@ -1,0 +1,94 @@
+<div class="min-h-screen flex items-center justify-center bg-cover bg-center"
+  style="background-image: url('https://trisquelion.cl/wp-content/uploads/2023/02/EnriqueMonsalveFotografia-4-scaled.jpg');">
+  <!-- Fondo desvanecido -->
+  <div class="absolute inset-0 bg-black opacity-50"></div>
+
+  <!-- Contenedor principal (Flex vertical) -->
+  <div class="relative z-10  items-center flex gap-8 w-full max-w-5xl justify-center">
+
+    <!-- Contenedor del formulario (centrado) -->
+    <div class="bg-neutral-900 backdrop-blur-sm p-8 rounded-lg shadow-xl w-full max-w-md">
+      <!-- Imagen de identidad de la empresa -->
+      <div class="mb-6 text-center">
+        <img src="https://trisquelion.cl/wp-content/uploads/2023/03/output-onlinepngtools.png" alt="Logo de Trisquelion"
+          class="mx-auto h-16">
+      </div>
+      <!-- Título -->
+      <h2 class="text-2xl font-bold text-center mb-6 text-white">Validación de Documentos</h2>
+
+      <!-- Formulario -->
+      <form [formGroup]="formulario" (ngSubmit)="validarCodigo()">
+        <!-- Campo de entrada -->
+        <div class="mb-6">
+          <label for="codigo-validacion" class="block mb-2 text-sm font-medium text-neutral-300">Código de
+            validación</label>
+          <input type="text" id="codigo-validacion" formControlName="codigo"
+            class="w-full p-3 bg-neutral-700 border border-neutral-600 rounded-lg text-neutral-200 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent"
+            placeholder="Ingresa el código" required />
+          <small *ngIf="formulario.get('codigo')?.hasError('required') && formulario.get('codigo')?.touched"
+            class="text-red-400 text-sm">
+            Este campo es obligatorio.
+          </small>
+        </div>
+
+        <!-- Botón de validación -->
+        <button type="submit"
+          class="w-full py-3 bg-neutral-700 text-white font-semibold rounded-lg hover:bg-neutral-600 transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-500"
+          [disabled]="formulario.invalid || isLoading">
+          {{ isLoading ? 'Validando...' : 'Validar' }}
+        </button>
+
+        <!-- Mensajes de validación -->
+        <div class="mt-6 space-y-2 text-sm">
+          <!-- Mensaje de éxito o error -->
+          <div *ngIf="mensaje" [ngClass]="{
+            'bg-green-500/10 text-green-400': esExito,
+            'bg-red-500/10 text-red-400': !esExito
+            }" class="p-3 rounded-lg">
+            {{ mensaje }}
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Contenedor de datos del documento (aparece con desplazamiento) -->
+    <div *ngIf="documentoData" class="bg-neutral-900 backdrop-blur-sm p-8 rounded-lg shadow-xl w-full max-w-lg mt-8">
+      <h2 class="text-xl font-semibold mb-6 text-white">Documento Válido</h2>
+      <div class="space-y-4 text-white">
+        <p><strong>Código de Validación:</strong> {{ documentoData.documento.codigo_validacion }}</p>
+        <p><strong>Folio:</strong> {{ documentoData.documento.folio }}</p>
+        <p><strong>Fecha de Creación:</strong> {{ documentoData.documento.fecha_creacion | date }}</p>
+
+        <div>
+          <h4 class="font-semibold mt-4">Consulta:</h4>
+          <p><strong>Diagnóstico:</strong> {{ documentoData.consulta.diagnostico }}</p>
+          <p><strong>Fecha de Consulta:</strong> {{ documentoData.consulta.fecha | date }}</p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mt-4">Médico:</h4>
+          <p><strong>Nombre:</strong> {{ documentoData.medico.nombre }} {{ documentoData.medico.apellido }}</p>
+          <p><strong>Especialidad:</strong> {{ documentoData.medico.especialidad }}</p>
+          <p><strong>RUT:</strong> {{ documentoData.medico.rut }}</p>
+          <p><strong>Registro SIS:</strong> {{ documentoData.medico.reg_sis }}</p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mt-4">Paciente:</h4>
+          <p><strong>Nombre:</strong> {{ documentoData.paciente.nombre }} {{ documentoData.paciente.apellido }}</p>
+          <p><strong>RUT:</strong> {{ documentoData.paciente.rut }}</p>
+          <p><strong>Fecha de Nacimiento:</strong> {{ documentoData.paciente.fecha_nacimiento | date }}</p>
+          <p><strong>Domicilio:</strong> {{ documentoData.paciente.domicilio }}</p>
+        </div>
+      </div>
+
+      <!-- Mostrar la IP y la fecha de consulta si están disponibles -->
+      <div *ngIf="ipAddress && fechaHoraConsulta" class="mt-8 text-white">
+        <p>Hemos guardado los datos de su consulta al igual que su IP para resguardar el buen uso del sistema.</p>
+        <br>
+        <p><strong>IP:</strong> {{ ipAddress }}</p>
+        <p><strong>Fecha y hora de la consulta:</strong> {{ fechaHoraConsulta }}</p>
+      </div>
+    </div>
+  </div>
+</div>
